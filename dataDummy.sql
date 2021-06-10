@@ -77,9 +77,9 @@ INSERT INTO Berkategori VALUES (1,5)
 
 INSERT INTO Harga (harga,waktuBerlaku) VALUES (10000,'2020-12-31 23:59:59')
 INSERT INTO Harga (harga,waktuBerlaku) VALUES (9800,'2021-01-01 13:32:12')
-INSERT INTO Harga (harga,waktuBerlaku) VALUES (10000,'2021-01-28 23:41:11')
-INSERT INTO Harga (harga,waktuBerlaku) VALUES (10000,'2021-03-12 07:12:00')
-INSERT INTO Harga (harga,waktuBerlaku) VALUES (10000,'2021-04-02 00:01:48')
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (13200,'2021-01-28 23:41:11')
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (11200,'2021-03-12 07:12:00')
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (12000,'2021-04-02 00:01:48')
 
 INSERT INTO Langganan (durasi,idMember,waktuSelesai,idHarga) VALUES (30,1,'2021-01-01 09:00:21',1)
 INSERT INTO Langganan (durasi,idMember,waktuSelesai,idHarga) VALUES (30,1,'2021-02-03 15:21:33',3)
