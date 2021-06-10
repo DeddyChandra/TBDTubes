@@ -67,7 +67,7 @@ CREATE TABLE Harga(
 
 CREATE TABLE Langganan(
 	idLangganan int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	durasi time,
+	durasi int,
 	idMember int,
 	waktuSelesai datetime,
 	idHarga int,
