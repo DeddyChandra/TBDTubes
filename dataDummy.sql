@@ -20,16 +20,16 @@ VALUES('Kath23@gmail.com','Kath99','Kathleen')
 INSERT INTO Admin(email,password,nama)
 VALUES('Evan@gmail.com','Evan77','Evander')
 
-INSERT INTO Artikel
-VALUES(1,1,1,'Rahasia Mengatur Keuangan','2019-09-01 21:00:00','2019-09-12 21:19:01',null,1)
-INSERT INTO Artikel 
-VALUES(2,0,0,'Rahasia Hidup Sehat','2019-09-28 10:00:00','2019-10-03 10:18:29',null,2)
-INSERT INTO Artikel 
-VALUES(3,1,3,'Rahasia Hidup Sukses','2019-10-10 10:00:00',null,null,3)
-INSERT INTO Artikel 
-VALUES(4,0,2,'Peluang Usaha Online Tanpa Modal','2019-10-30 06:00:00','2019-11-05 23:21:40','2020-02-17 20:09:08',4)
-INSERT INTO Artikel 
-VALUES(5,1,3,'Makanan Hemat Untuk Anak Kosan','2019-11-01 05:00:00',null,null,5)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(1,1,'Rahasia Mengatur Keuangan','2019-09-01 21:00:00','2019-09-12 21:19:01',null,1)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(0,0,'Rahasia Hidup Sehat','2019-09-28 10:00:00','2019-10-03 10:18:29',null,2)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(1,3,'Rahasia Hidup Sukses','2019-10-10 10:00:00',null,null,3)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(0,2,'Peluang Usaha Online Tanpa Modal','2019-10-30 06:00:00','2019-11-05 23:21:40','2020-02-17 20:09:08',4)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(1,3,'Makanan Hemat Untuk Anak Kosan','2019-11-01 05:00:00',null,null,5)
 
 INSERT INTO Membaca 
 VALUES(1,2,'mulai','2020-01-02 23:00:00')
