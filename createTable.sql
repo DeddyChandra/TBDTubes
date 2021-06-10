@@ -1,3 +1,13 @@
+DROP TABLE IF EXISTS [Langganan]
+DROP TABLE IF EXISTS [Berkategori]
+DROP TABLE IF EXISTS [Membaca]
+DROP TABLE IF EXISTS [Harga]
+DROP TABLE IF EXISTS [Kategori]
+DROP TABLE IF EXISTS [Artikel]
+DROP TABLE IF EXISTS [Admin]
+DROP TABLE IF EXISTS [Member]
+
+
 CREATE TABLE Member(
 	idMember int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	nama varchar(255),
@@ -48,16 +58,19 @@ CREATE TABLE Berkategori(
 	FOREIGN KEY (idKategori) REFERENCES Kategori(idKategori)
 )
 
-CREATE TABLE Langganan(
-	idLangganan int NOT NULL PRIMARY KEY,
-	durasi time,
-	idMember int,
-	waktuSelesai datetime,
-	FOREIGN KEY (idMember) REFERENCES Member(idMember)
-)
-
-CREATE TABLE harga(
+CREATE TABLE Harga(
 	idHarga int NOT NULL PRIMARY KEY,
 	harga money,
 	waktuBerlaku datetime
 )
+
+CREATE TABLE Langganan(
+	idLangganan int NOT NULL PRIMARY KEY IDENTITY(1,1),
+	durasi time,
+	idMember int,
+	waktuSelesai datetime,
+	idHarga int,
+	FOREIGN KEY (idMember) REFERENCES Member(idMember),
+	FOREIGN KEY (idHarga) REFERENCES Harga(idHarga)
+)
+
