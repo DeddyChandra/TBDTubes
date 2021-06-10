@@ -59,7 +59,7 @@ CREATE TABLE Berkategori(
 )
 
 CREATE TABLE Harga(
-	idHarga int NOT NULL PRIMARY KEY,
+	idHarga int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	harga money,
 	waktuBerlaku datetime
 )
