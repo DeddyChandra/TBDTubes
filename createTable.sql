@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS [Artikel]
 DROP TABLE IF EXISTS [Admin]
 DROP TABLE IF EXISTS [Member]
 
-
 CREATE TABLE Member(
 	idMember int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	nama varchar(255),
