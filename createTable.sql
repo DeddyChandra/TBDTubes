@@ -31,6 +31,7 @@ CREATE TABLE Artikel(
 	berbayar BIT,
 	[status] TINYINT,
 	judul varchar(255),
+	tanggalUnggah DATETIME,
 	tanggalValidasi DATETIME,
 	tanggalHapus DATETIME,
 	idAdmin INT NOT NULL,
