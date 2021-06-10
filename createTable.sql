@@ -27,10 +27,11 @@ CREATE TABLE [Admin] (
 )
 
 CREATE TABLE Artikel(
-	idArtikel INT NOT NULL PRIMARY KEY,
+	idArtikel INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	berbayar BIT,
 	[status] TINYINT,
 	judul varchar(255),
+	tanggalUnggah DATETIME,
 	tanggalValidasi DATETIME,
 	tanggalHapus DATETIME,
 	idAdmin INT NOT NULL,
