@@ -20,16 +20,16 @@ VALUES('Kath23@gmail.com','Kath99','Kathleen')
 INSERT INTO Admin(email,password,nama)
 VALUES('Evan@gmail.com','Evan77','Evander')
 
-INSERT INTO Artikel
-VALUES(1,1,1,'Rahasia Mengatur Keuangan','2019-09-12 21:19:01',null,1)
-INSERT INTO Artikel 
-VALUES(2,0,0,'Rahasia Hidup Sehat','2019-10-03 10:18:29',null,2)
-INSERT INTO Artikel 
-VALUES(3,1,3,'Rahasia Hidup Sukses',null,null,3)
-INSERT INTO Artikel 
-VALUES(4,0,2,'Peluang Usaha Online Tanpa Modal','2019-11-05 23:21:40','2020-02-17 20:09:08',4)
-INSERT INTO Artikel 
-VALUES(5,1,3,'Makanan Hemat Untuk Anak Kosan',null,null,5)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(1,1,'Rahasia Mengatur Keuangan','2019-09-01 21:00:00','2019-09-12 21:19:01',null,1)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(0,0,'Rahasia Hidup Sehat','2019-09-28 10:00:00','2019-10-03 10:18:29',null,2)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(1,3,'Rahasia Hidup Sukses','2019-10-10 10:00:00',null,null,3)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(0,2,'Peluang Usaha Online Tanpa Modal','2019-10-30 06:00:00','2019-11-05 23:21:40','2020-02-17 20:09:08',4)
+INSERT INTO Artikel (berbayar,[status],judul,tanggalUnggah,tanggalValidasi,tanggalHapus,idAdmin)
+VALUES(1,3,'Makanan Hemat Untuk Anak Kosan','2019-11-01 05:00:00',null,null,5)
 
 INSERT INTO Membaca 
 VALUES(1,2,'mulai','2020-01-02 23:00:00')
@@ -51,3 +51,38 @@ INSERT INTO Membaca
 VALUES(5,4,'mulai','2020-05-29 23:00:20')
 INSERT INTO Membaca 
 VALUES(5,4,'selesai','2020-04-30 23:00:11')
+
+INSERT INTO Kategori (kategori) VALUES ('Fisika')
+INSERT INTO Kategori (kategori) VALUES ('Matematika')
+INSERT INTO Kategori (kategori) VALUES ('Ekonomi')
+INSERT INTO Kategori (kategori) VALUES ('Kimia')
+INSERT INTO Kategori (kategori) VALUES ('Akuntansi')
+INSERT INTO Kategori (kategori) VALUES ('Biologi')
+INSERT INTO Kategori (kategori) VALUES ('Astronomi')
+
+INSERT INTO Berkategori VALUES (1,2)
+INSERT INTO Berkategori VALUES (2,2)
+INSERT INTO Berkategori VALUES (3,2)
+INSERT INTO Berkategori VALUES (5,3)
+INSERT INTO Berkategori VALUES (3,7)
+INSERT INTO Berkategori VALUES (2,4)
+INSERT INTO Berkategori VALUES (2,1)
+INSERT INTO Berkategori VALUES (2,3)
+INSERT INTO Berkategori VALUES (2,5)
+INSERT INTO Berkategori VALUES (2,6)
+INSERT INTO Berkategori VALUES (2,7)
+INSERT INTO Berkategori VALUES (4,1)
+INSERT INTO Berkategori VALUES (5,1)
+INSERT INTO Berkategori VALUES (1,5)
+
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (10000,'2020-12-31 23:59:59')
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (9800,'2021-01-01 13:32:12')
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (13200,'2021-01-28 23:41:11')
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (11200,'2021-03-12 07:12:00')
+INSERT INTO Harga (harga,waktuBerlaku) VALUES (12000,'2021-04-02 00:01:48')
+
+INSERT INTO Langganan (durasi,idMember,waktuSelesai,idHarga) VALUES (30,1,'2021-01-01 09:00:21',1)
+INSERT INTO Langganan (durasi,idMember,waktuSelesai,idHarga) VALUES (30,1,'2021-02-03 15:21:33',3)
+INSERT INTO Langganan (durasi,idMember,waktuSelesai,idHarga) VALUES (30,2,'2021-02-04 13:00:21',3)
+INSERT INTO Langganan (durasi,idMember,waktuSelesai,idHarga) VALUES (30,1,'2021-03-04 15:30:11',3)
+INSERT INTO Langganan (durasi,idMember,waktuSelesai,idHarga) VALUES (30,1,'2021-04-04 15:40:33',4)
