@@ -34,6 +34,8 @@ CREATE TABLE Artikel(
 	tanggalValidasi DATETIME,
 	tanggalHapus DATETIME,
 	idAdmin INT NOT NULL,
+	idMember INT,
+	FOREIGN KEY (idMember) REFERENCES Member(idMember),
 	FOREIGN KEY (idAdmin) REFERENCES [Admin](idAdmin)
 )
 
