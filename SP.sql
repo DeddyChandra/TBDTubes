@@ -100,4 +100,308 @@ EXEC OpenArticle 1, 1
 EXEC OpenArticle 1, 2
 EXEC OpenArticle 2, 1
 EXEC OpenArticle 2, 2
+/* Ini harus perhatiin apakah recordnya udah benar mencakup pada EXECnya , jika belum dibikin sendiri saja ya :D*/
 
+
+--6
+DROP PROCEDURE IF EXISTS [FindArticleByTitle]
+CREATE PROCEDURE FindArticleByTitle
+	@keyword varchar(255)
+AS
+DECLARE @resultArticle TABLE(
+	idArtikel int,
+	berbayar bit,
+	[status] tinyint,
+	judul varchar(255),
+	tanggalUnggah datetime,
+	tanggalValidasi datetime,
+	tanggalHapus datetime,
+	idAdmin int
+)
+DECLARE @keywordTable TABLE (
+	keyword varchar(100)
+)
+INSERT INTO @keywordTable
+SELECT *
+FROM MultiValueSearch(@keyword)
+
+DECLARE 
+	@i int
+SET @i = 0
+
+DECLARE curArtikel CURSOR
+FOR
+	SELECT *
+	FROM @keywordTable
+OPEN curArtikel
+	DECLARE
+		@judul varchar(100)
+FETCH NEXT FROM curArtikel INTO @judul
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO @resultArticle (idArtikel, berbayar, [status], judul, tanggalUnggah, tanggalValidasi, tanggalHapus, idAdmin)
+		SELECT DISTINCT(idArtikel), berbayar, [status], judul, tanggalUnggah, tanggalValidasi, tanggalHapus, idAdmin
+		FROM master.dbo.Artikel
+		WHERE judul LIKE '%'+@judul+'%'
+		FETCH NEXT FROM curArtikel INTO @judul
+	END
+CLOSE curArtikel
+DEALLOCATE curArtikel
+
+SELECT *
+FROM Kategori INNER JOIN (SELECT article.idArtikel, article.berbayar, article.status, article.judul, article.tanggalUnggah, article.tanggalValidasi, article.tanggalHapus, article.idAdmin, Berkategori.idKategori
+FROM @resultArticle AS [article] INNER JOIN Berkategori on article.idArtikel = Berkategori.idArtikel) AS [himp] on kategori.idKategori =  himp.idKategori
+WHERE himp.tanggalHapus IS NULL
+ORDER BY idArtikel
+GO
+EXEC FindArticleByTitle 'at;heme;'
+
+
+--7
+DROP PROCEDURE IF EXISTS [FindArticleByCategory]
+CREATE PROCEDURE FindArticleByCategory
+	@keyword varchar(255)
+AS
+DECLARE @resultCategory TABLE(
+	idKategori int,
+	kategori varchar(255)
+)
+DECLARE @keywordTable TABLE (
+	keyword varchar(100)
+)
+INSERT INTO @keywordTable
+SELECT *
+FROM MultiValueSearch(@keyword)
+
+DECLARE 
+	@i int
+SET @i = 0
+
+DECLARE curKategori CURSOR
+FOR
+	SELECT *
+	FROM @keywordTable
+OPEN curKategori
+	DECLARE
+		@judul varchar(100)
+FETCH NEXT FROM curKategori INTO @judul
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO @resultCategory (idKategori, kategori)
+		SELECT DISTINCT(idKategori), kategori
+		FROM master.dbo.Kategori
+		WHERE kategori LIKE '%'+@judul+'%'
+		FETCH NEXT FROM curKategori INTO @judul
+	END
+CLOSE curKategori
+DEALLOCATE curKategori
+
+SELECT himp.idArtikel, himp.berbayar, himp.status, himp.judul, himp.tanggalUnggah, himp.tanggalValidasi, himp.tanggalHapus, himp.idAdmin, category.idKategori, category.kategori
+FROM @resultCategory AS [category] INNER JOIN (SELECT article.idArtikel, article.berbayar, article.status, article.judul, article.tanggalUnggah, article.tanggalValidasi, article.tanggalHapus, article.idAdmin, Berkategori.idKategori
+FROM Artikel AS [article] INNER JOIN Berkategori on article.idArtikel = Berkategori.idArtikel) AS [himp] on category.idKategori =  himp.idKategori
+WHERE himp.tanggalHapus IS NULL
+ORDER BY idArtikel
+GO
+EXEC FindArticleByCategory'akuntansi;fisika;'
+
+
+--8
+DROP PROCEDURE IF EXISTS [FindArticleByAuthor]
+/* password ga akan di select */
+CREATE PROCEDURE FindArticleByAuthor
+	@keyword varchar(255)
+AS
+DECLARE @resultAuthor TABLE(
+	idMember int,
+	nama varchar(255),
+	email varchar(255),
+	kontak varchar(12),
+	terverifikasi bit,
+	alamat varchar(255),
+	[password] varchar(255),
+	statusLangganan bit
+)
+DECLARE @keywordTable TABLE (
+	keyword varchar(100)
+)
+INSERT INTO @keywordTable
+SELECT *
+FROM MultiValueSearch(@keyword)
+
+DECLARE 
+	@i int
+SET @i = 0
+
+DECLARE curAuthor CURSOR
+FOR
+	SELECT *
+	FROM @keywordTable
+OPEN curAuthor
+	DECLARE
+		@judul varchar(100)
+FETCH NEXT FROM curAuthor INTO @judul
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO @resultAuthor (idMember, nama, email, kontak, terverifikasi, alamat, statusLangganan)
+		SELECT DISTINCT(idMember), nama, email, kontak, terverifikasi, alamat, statusLangganan
+		FROM master.dbo.Member
+		WHERE nama LIKE '%'+@judul+'%'
+		FETCH NEXT FROM curAuthor INTO @judul
+	END
+CLOSE curAuthor
+DEALLOCATE curAuthor
+
+SELECT *
+FROM Member INNER JOIN (
+	SELECT himp.idArtikel, himp.berbayar, himp.status, himp.judul, himp.tanggalUnggah, himp.tanggalValidasi, himp.tanggalHapus, himp.idAdmin, himp.idMember, kategori.idKategori, kategori.kategori
+	FROM Kategori INNER JOIN (
+		SELECT article.idArtikel, article.berbayar, article.status, article.judul, article.tanggalUnggah, article.tanggalValidasi, article.tanggalHapus, article.idAdmin, article.idMember, Berkategori.idKategori
+		FROM Artikel AS [article] INNER JOIN Berkategori on article.idArtikel = Berkategori.idArtikel) AS [himp]
+		on kategori.idKategori =  himp.idKategori) AS [himp2]
+	on Member.idMember =  himp2.idMember
+WHERE himp2.tanggalHapus IS NULL
+ORDER BY idArtikel
+GO
+EXEC FindArticleByAuthor'i;'
+
+
+--9
+DROP PROCEDURE IF EXISTS [CategoryOfInterest]
+CREATE PROCEDURE CategoryOfInterest
+	@idMember int
+AS 
+DECLARE @resultArticle TABLE(
+	idArtikel int,
+	duration int
+)
+DECLARE curInterest CURSOR
+FOR
+	SELECT idArtikel, waktu
+	FROM Membaca
+	WHERE idMember =  @idMember
+	ORDER BY idArtikel, waktu
+OPEN curInterest
+	DECLARE
+		@idArtikel int,
+		@waktu datetime,
+		@duration datetime,
+		@prevTime datetime,
+		@prevIdArtikel datetime,
+		@count bit
+	SET @count = 0
+FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF @count = 0
+			BEGIN
+				SET @prevTime =  @waktu
+				SET @prevIdArtikel =  @idArtikel
+				SET @count = 1
+			END
+		ELSE IF @count = 1
+			BEGIN
+				IF @prevIdArtikel =  @idArtikel
+					INSERT INTO @resultArticle
+					SELECT @idArtikel, DATEDIFF(minute, @prevTime, @waktu)
+					SET @count = 0
+			END
+		FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
+	END
+CLOSE curInterest
+DEALLOCATE curInterest
+
+SELECT himp.idKategori, kategori, SUM(duration) AS duration
+FROM Kategori INNER JOIN (
+	SELECT article.idArtikel, article.duration, Berkategori.idKategori
+	FROM @resultArticle AS [article] INNER JOIN Berkategori on article.idArtikel = Berkategori.idArtikel) AS [himp]
+	on himp.idKategori =  kategori.idKategori
+	GROUP BY himp.idKategori, kategori
+	ORDER BY duration
+GO
+EXEC CategoryOfInterest 3
+
+
+--10
+DROP PROCEDURE IF EXISTS [TopArticle]
+CREATE PROCEDURE TopArticle
+AS
+DECLARE @resultArticle TABLE(
+	idArtikel int,
+	duration int
+)
+DECLARE curInterest CURSOR
+FOR
+	SELECT idArtikel, waktu
+	FROM Membaca
+	ORDER BY idArtikel, waktu
+OPEN curInterest
+	DECLARE
+		@idArtikel int,
+		@waktu datetime,
+		@judul varchar(255),
+		@duration datetime,
+		@prevTime datetime,
+		@prevIdArtikel datetime,
+		@count bit
+	SET @count = 0
+FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		IF @count = 0
+			BEGIN
+				SET @prevTime =  @waktu
+				SET @prevIdArtikel =  @idArtikel
+				SET @count = 1
+			END
+		ELSE IF @count = 1
+			BEGIN
+				IF @prevIdArtikel =  @idArtikel
+					INSERT INTO @resultArticle
+					SELECT @idArtikel, DATEDIFF(minute, @prevTime, @waktu)
+					SET @count = 0
+			END
+		FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
+	END
+CLOSE curInterest
+DEALLOCATE curInterest
+SELECT *
+FROM @resultArticle as [article] INNER JOIN Artikel on article.idArtikel =  Artikel.idArtikel 
+GO
+EXEC TopArticle 
+
+
+--11
+DROP PROCEDURE IF EXISTS [ChangePrice]
+CREATE PROCEDURE ChangePrice
+	@harga int,
+	@idAdmin int
+AS
+INSERT INTO Harga (harga, waktuBerlaku, idAdmin)
+SELECT @harga, GETDATE(), @idAdmin
+GO
+EXEC ChangePrice 10000, 1
+
+
+--12
+--status artikel : 0 ditolak, 1 : diterima, 2 : dihapus, 3 : pending
+DROP PROCEDURE IF EXISTS [ValidateArtikel]
+CREATE PROCEDURE ValidateArtikel
+	@idArtikel int,
+	@status bit,
+	@idAdmin int
+AS
+UPDATE Artikel
+SET [status] = @status, idAdmin = @idAdmin
+WHERE idArtikel = @idArtikel
+GO
+EXEC ValidateArtikel 1, 0, 3
+
+
+--13
+DROP PROCEDURE IF EXISTS [ScanTransaction]
+CREATE PROCEDURE ScanTransaction
+AS
+SELECT idLangganan, DATEADD(day,durasi,waktuSelesai) AS [waktuMulai], waktuSelesai, idMember, idHarga
+FROM Langganan
+GO
+EXEC ScanTransaction

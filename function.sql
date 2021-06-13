@@ -30,3 +30,18 @@ END
 GO
 SELECT *
 FROM MultiValueSearch('abc;de;fggh;')
+
+DROP FUNCTION IF EXISTS IfRecordExists
+CREATE FUNCTION IfRecordExists(
+	@id int,
+	@artikleTable resultArticle READONLY
+)
+RETURNS bit
+BEGIN
+	DECLARE @result bit
+	SET @result = 0
+	IF ((SELECT COUNT(artikleTable.idArtikel) FROM @artikleTable AS [artikleTable] WHERE artikleTable.idArtikel = @id) = 1)
+		BEGIN
+			SET @result = 1
+		END
+END

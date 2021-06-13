@@ -34,7 +34,9 @@ CREATE TABLE Artikel(
 	tanggalValidasi DATETIME,
 	tanggalHapus DATETIME,
 	idAdmin INT NOT NULL,
-	FOREIGN KEY (idAdmin) REFERENCES [Admin](idAdmin)
+	idMember INT NOT NULL,
+	FOREIGN KEY (idAdmin) REFERENCES [Admin](idAdmin),
+	FOREIGN KEY (idMember) REFERENCES [Member](idMember)
 )
 
 CREATE TABLE Membaca(
@@ -61,7 +63,9 @@ CREATE TABLE Berkategori(
 CREATE TABLE Harga(
 	idHarga int NOT NULL PRIMARY KEY IDENTITY(1,1),
 	harga money,
-	waktuBerlaku datetime
+	waktuBerlaku datetime,
+	idAdmin INT NOT NULL,
+	FOREIGN KEY (idAdmin) REFERENCES [Admin](idAdmin),
 )
 
 CREATE TABLE Langganan(
