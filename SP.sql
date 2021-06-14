@@ -405,3 +405,51 @@ SELECT idLangganan, DATEADD(day,-durasi,waktuSelesai) AS [waktuMulai], waktuSele
 FROM Langganan
 GO
 EXEC ScanTransaction
+
+DROP PROCEDURE IF EXISTS [UploadArticle]
+
+--14
+CREATE PROCEDURE UploadArticle
+@judul varchar(100),
+@idMeber int,
+@kategori varchar(255),--kategori number
+@berbayar BIT
+AS
+
+INSERT INTO Artikel(judul,[status],tanggalUnggah,berbayar)
+SELECT @judul,0,CURRENT_TIMESTAMP,@berbayar
+
+
+DECLARE @idcur int
+SELECT @idcur =MAX(idArtikel) FROM Article
+
+DECLARE kategori CURSOR FOR
+SELECT kata FROM Split(@kategori)
+	
+OPEN kategori
+
+DECLARE @curnum varchar(255)
+
+
+FETCH NEXT FROM curMhs INTO @curnum
+WHILE @@FETCH_STATUS=0
+BEGIN
+	INSERT INTO Berkategori(idArtikel,idKategori)
+	SELECT @idcur,CONVERT(INT,@curnum)
+	FETCH NEXT FROM curMhs INTO @curnum
+END
+
+
+CLOSE kategori
+DEALLOCATE kategori
+
+DROP PROCEDURE IF EXISTS [Subscribe]
+
+--15
+CREATE PROCEDURE Subscribe
+@idMember int
+AS
+DECLARE @maxi int;
+SELECT @maxi = MAX(idHarga) FROM Harga
+INSERT INTO LANGANAN(durasi,idMember,waktuSelesai,idHarga)
+SELECT 30,@idMember,CURRENT_TIMESTAMP,@maxi
