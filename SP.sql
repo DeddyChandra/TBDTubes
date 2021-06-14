@@ -401,7 +401,7 @@ EXEC ValidateArtikel 1, 0, 3
 DROP PROCEDURE IF EXISTS [ScanTransaction]
 CREATE PROCEDURE ScanTransaction
 AS
-SELECT idLangganan, DATEADD(day,durasi,waktuSelesai) AS [waktuMulai], waktuSelesai, idMember, idHarga
+SELECT idLangganan, DATEADD(day,-durasi,waktuSelesai) AS [waktuMulai], waktuSelesai, idMember, idHarga
 FROM Langganan
 GO
 EXEC ScanTransaction
