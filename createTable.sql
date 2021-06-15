@@ -33,7 +33,7 @@ CREATE TABLE Artikel(
 	tanggalUnggah DATETIME,
 	tanggalValidasi DATETIME,
 	tanggalHapus DATETIME,
-	idAdmin INT NOT NULL,
+	idAdmin INT,
 	idMember INT NOT NULL,
 	FOREIGN KEY (idAdmin) REFERENCES [Admin](idAdmin),
 	FOREIGN KEY (idMember) REFERENCES [Member](idMember)
@@ -50,7 +50,7 @@ CREATE TABLE Membaca(
 
 CREATE TABLE Kategori(
 	idKategori int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	kategori varchar(255)
+	kategori varchar(255) UNIQUE
 )
 
 CREATE TABLE Berkategori(

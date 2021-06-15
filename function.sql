@@ -1,9 +1,9 @@
 DROP FUNCTION IF EXISTS MultiValueSearch
 CREATE FUNCTION MultiValueSearch(
-	@input varchar(100)	
+	@input varchar(255)	
 )
 RETURNS @result TABLE(
-	keyword varchar(100)
+	keyword varchar(255)
 )
 BEGIN
 	DECLARE 

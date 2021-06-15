@@ -424,3 +424,54 @@ SELECT idLangganan, DATEADD(day,-durasi,waktuSelesai) AS [waktuMulai], waktuSele
 FROM Langganan
 GO
 EXEC ScanTransaction
+
+--14
+DROP PROCEDURE IF EXISTS [UploadArticle]
+
+ALTER PROCEDURE UploadArticle
+@judul varchar(100),
+@idMember int,
+@kategori varchar(255),--kategori number
+@berbayar BIT
+AS
+
+INSERT INTO Artikel(judul,[status],tanggalUnggah,berbayar,idMember)
+SELECT @judul,0,CURRENT_TIMESTAMP,@berbayar,@idMember
+
+
+DECLARE @idcur int
+SELECT @idcur =MAX(idArtikel) FROM Artikel
+
+DECLARE cursorKategori CURSOR FOR
+SELECT keyword FROM MultiValueSearch(@kategori)
+	
+OPEN cursorKategori
+
+DECLARE @curnum varchar(255)
+
+
+FETCH NEXT FROM cursorKategori INTO @curnum
+WHILE @@FETCH_STATUS=0
+BEGIN
+	INSERT INTO Berkategori(idArtikel,idKategori)
+	SELECT @idcur,CONVERT(INT,@curnum)
+	FETCH NEXT FROM cursorKategori INTO @curnum
+END
+
+
+CLOSE cursorKategori
+DEALLOCATE cursorKategori
+
+--EXEC UploadArticle 'deddoy carry the game',1,'1;2;',1
+
+
+--15
+DROP PROCEDURE IF EXISTS [Subscribe]
+
+CREATE PROCEDURE Subscribe
+@idMember int
+AS
+DECLARE @maxi int;
+SELECT @maxi = MAX(idHarga) FROM Harga
+INSERT INTO LANGANAN(durasi,idMember,waktuSelesai,idHarga)
+SELECT 30,@idMember,CURRENT_TIMESTAMP,@maxi
