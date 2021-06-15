@@ -32,7 +32,7 @@ SELECT *
 FROM MultiValueSearch('abc;de;fggh;')
 
 
-
+--2
 DROP FUNCTION IF EXISTS SearchKategoriByID
 CREATE FUNCTION SearchKategoriByName
 (
