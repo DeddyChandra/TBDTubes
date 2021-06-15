@@ -50,7 +50,7 @@ CREATE TABLE Membaca(
 
 CREATE TABLE Kategori(
 	idKategori int NOT NULL PRIMARY KEY IDENTITY(1,1),
-	kategori varchar(255)
+	kategori varchar(255) UNIQUE
 )
 
 CREATE TABLE Berkategori(
