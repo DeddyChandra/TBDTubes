@@ -406,46 +406,49 @@ FROM Langganan
 GO
 EXEC ScanTransaction
 
+--14
 DROP PROCEDURE IF EXISTS [UploadArticle]
 
---14
-CREATE PROCEDURE UploadArticle
+ALTER PROCEDURE UploadArticle
 @judul varchar(100),
-@idMeber int,
+@idMember int,
 @kategori varchar(255),--kategori number
 @berbayar BIT
 AS
 
-INSERT INTO Artikel(judul,[status],tanggalUnggah,berbayar)
-SELECT @judul,0,CURRENT_TIMESTAMP,@berbayar
+INSERT INTO Artikel(judul,[status],tanggalUnggah,berbayar,idMember)
+SELECT @judul,0,CURRENT_TIMESTAMP,@berbayar,@idMember
 
 
 DECLARE @idcur int
-SELECT @idcur =MAX(idArtikel) FROM Article
+SELECT @idcur =MAX(idArtikel) FROM Artikel
 
-DECLARE kategori CURSOR FOR
-SELECT kata FROM Split(@kategori)
+DECLARE cursorKategori CURSOR FOR
+SELECT keyword FROM MultiValue(@kategori)
 	
-OPEN kategori
+OPEN cursorKategori
 
 DECLARE @curnum varchar(255)
 
 
-FETCH NEXT FROM curMhs INTO @curnum
+FETCH NEXT FROM cursorKategori INTO @curnum
 WHILE @@FETCH_STATUS=0
 BEGIN
 	INSERT INTO Berkategori(idArtikel,idKategori)
 	SELECT @idcur,CONVERT(INT,@curnum)
-	FETCH NEXT FROM curMhs INTO @curnum
+	FETCH NEXT FROM cursorKategori INTO @curnum
 END
 
 
-CLOSE kategori
-DEALLOCATE kategori
+CLOSE cursorKategori
+DEALLOCATE cursorKategori
 
-DROP PROCEDURE IF EXISTS [Subscribe]
+--EXEC UploadArticle 'deddoy carry the game',1,'1;2;',1
+
 
 --15
+DROP PROCEDURE IF EXISTS [Subscribe]
+
 CREATE PROCEDURE Subscribe
 @idMember int
 AS
