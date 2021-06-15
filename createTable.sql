@@ -33,7 +33,7 @@ CREATE TABLE Artikel(
 	tanggalUnggah DATETIME,
 	tanggalValidasi DATETIME,
 	tanggalHapus DATETIME,
-	idAdmin INT NOT NULL,
+	idAdmin INT,
 	idMember INT NOT NULL,
 	FOREIGN KEY (idAdmin) REFERENCES [Admin](idAdmin),
 	FOREIGN KEY (idMember) REFERENCES [Member](idMember)
