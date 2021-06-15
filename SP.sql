@@ -424,7 +424,7 @@ DECLARE @idcur int
 SELECT @idcur =MAX(idArtikel) FROM Artikel
 
 DECLARE cursorKategori CURSOR FOR
-SELECT keyword FROM MultiValue(@kategori)
+SELECT keyword FROM MultiValueSearch(@kategori)
 	
 OPEN cursorKategori
 
