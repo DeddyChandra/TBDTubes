@@ -44,8 +44,8 @@ VALUES(1,2,'mulai','2020-01-02 23:00:00'),
 (3,3,'selesai','2020-04-01 19:00:00'),
 (4,5,'mulai','2020-04-19 21:00:10'),
 (4,5,'selesai','2020-04-19 23:00:10'),
-(5,4,'mulai','2020-05-29 23:00:20'),
-(5,4,'selesai','2020-04-30 23:00:11')
+(5,4,'mulai','2020-05-29 23:00:11'),
+(5,4,'selesai','2020-04-30 23:00:20')
 
 INSERT INTO Kategori (kategori) VALUES ('Fisika')
 INSERT INTO Kategori (kategori) VALUES ('Matematika')
