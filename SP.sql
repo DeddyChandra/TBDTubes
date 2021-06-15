@@ -20,6 +20,7 @@ CREATE PROCEDURE EmailVerification
 AS
 UPDATE master.dbo.Member 
 SET terverifikasi = 1
+WHERE idMember =  @idMember
 GO
 EXEC EmailVerification 1
 
@@ -331,44 +332,62 @@ DECLARE @resultArticle TABLE(
 )
 DECLARE curInterest CURSOR
 FOR
-	SELECT idArtikel, waktu
+	SELECT idMember, idArtikel, waktu, status
 	FROM Membaca
-	ORDER BY idArtikel, waktu
+	ORDER BY idMember, idArtikel, waktu
 OPEN curInterest
 	DECLARE
+		@idMember int,
 		@idArtikel int,
 		@waktu datetime,
 		@judul varchar(255),
+		@status varchar(255),
 		@duration datetime,
-		@prevTime datetime,
+		@prevIdMember int,
+		@prevWaktu datetime,
 		@prevIdArtikel datetime,
-		@count bit
-	SET @count = 0
-FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
+		@prevStatus varchar(255),
+		@belumSelesai bit
+	SET @belumSelesai = 0
+	/*kalao tablenya ada pasangan selesai maka = 0 kalao tablenya ga ada pasangan selesai maka 1*/
+FETCH NEXT FROM curInterest INTO @prevIdMember, @previdArtikel, @prevWaktu, @prevStatus
 WHILE @@FETCH_STATUS = 0
 	BEGIN
-		IF @count = 0
+		IF @prevStatus =  'mulai'
 			BEGIN
-				SET @prevTime =  @waktu
-				SET @prevIdArtikel =  @idArtikel
-				SET @count = 1
+				FETCH NEXT FROM curInterest INTO @idMember, @idArtikel, @waktu, @status
+				IF @status = 'selesai' AND @idMember = @prevIdMember AND @idArtikel = @prevIdArtikel
+					BEGIN
+						INSERT INTO @resultArticle
+						SELECT @idArtikel, DATEDIFF(MINUTE, @prevWaktu, @waktu)
+						FETCH NEXT FROM curInterest INTO @prevIdMember, @previdArtikel, @prevWaktu, @prevStatus
+					END
+				ELSE
+					/* ini kalau dia dapatnya mulai ga dpt selesai */
+					BEGIN
+						SET @prevIdMember = @idMember
+						SET @prevIdArtikel = @idArtikel
+						SET @prevWaktu =  @waktu
+						SET @prevStatus = @status
+					END
 			END
-		ELSE IF @count = 1
-			BEGIN
-				IF @prevIdArtikel =  @idArtikel
-					INSERT INTO @resultArticle
-					SELECT @idArtikel, DATEDIFF(minute, @prevTime, @waktu)
-					SET @count = 0
-			END
-		FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
 	END
 CLOSE curInterest
 DEALLOCATE curInterest
-SELECT *
-FROM @resultArticle as [article] INNER JOIN Artikel on article.idArtikel =  Artikel.idArtikel 
+
+SELECT Artikel.idArtikel, judul, duration
+FROM Artikel INNER JOIN
+	(SELECT article.idArtikel, SUM(article.duration) AS [duration]
+	FROM @resultArticle as [article]
+	GROUP BY article.idArtikel) as [himp]
+	on Artikel.idArtikel = himp.idArtikel
+	ORDER BY duration DESC
 GO
 EXEC TopArticle 
 
+SELECT idMember, idArtikel, waktu, status
+	FROM Membaca
+	ORDER BY waktu
 
 --11
 DROP PROCEDURE IF EXISTS [ChangePrice]
@@ -384,8 +403,8 @@ EXEC ChangePrice 10000, 1
 
 --12
 --status artikel : 0 ditolak, 1 : diterima, 2 : dihapus, 3 : pending
-DROP PROCEDURE IF EXISTS [ValidateArtikel]
-CREATE PROCEDURE ValidateArtikel
+DROP PROCEDURE IF EXISTS [UpdateArtikelStatus]
+CREATE PROCEDURE UpdateArtikelStatus
 	@idArtikel int,
 	@status bit,
 	@idAdmin int
