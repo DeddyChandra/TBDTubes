@@ -30,3 +30,24 @@ END
 GO
 SELECT *
 FROM MultiValueSearch('abc;de;fggh;')
+
+
+
+DROP FUNCTION IF EXISTS SearchKategoriByID
+CREATE FUNCTION SearchKategoriByName
+(
+	@kategori varchar(255)
+)
+RETURNS INT
+BEGIN
+	DECLARE @hasil INT
+	SELECT @hasil=idKategori FROM
+	Kategori
+	WHERE kategori = @kategori
+
+	return @hasil
+END
+
+
+--TC
+--SELECT dbo.SearchKategoriByName('Matematika')
