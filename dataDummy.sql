@@ -37,7 +37,9 @@ VALUES(1,3,'Makanan Hemat Untuk Anak Kosan','2019-11-01 05:00:00',null,null,5,2)
 
 INSERT INTO Membaca (idMember,idArtikel,[status],waktu)
 VALUES(1,2,'mulai','2020-01-02 23:00:00'),
+(1,5,'mulai','2020-01-02 23:09:01'),
 (1,2,'selesai','2020-01-04 00:00:00'),
+(1,5,'selesai','2020-01-3 20:00:00'),
 (2,1,'mulai','2020-02-29 19:00:00'),
 (2,1,'selesai','2020-03-01 18:00:00'),
 (3,3,'mulai','2020-04-01 08:00:09'),
