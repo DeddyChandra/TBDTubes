@@ -277,7 +277,7 @@ DECLARE @resultArticle TABLE(
 )
 DECLARE curInterest CURSOR
 FOR
-	SELECT idArtikel, waktu
+	SELECT idArtikel, waktu, status
 	FROM Membaca
 	WHERE idMember =  @idMember
 	ORDER BY idArtikel, waktu
@@ -285,28 +285,32 @@ OPEN curInterest
 	DECLARE
 		@idArtikel int,
 		@waktu datetime,
+		@judul varchar(255),
+		@status varchar(255),
 		@duration datetime,
-		@prevTime datetime,
+		@prevWaktu datetime,
 		@prevIdArtikel datetime,
-		@count bit
-	SET @count = 0
-FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
+		@prevStatus varchar(255)
+FETCH NEXT FROM curInterest INTO  @previdArtikel, @prevWaktu, @prevStatus
 WHILE @@FETCH_STATUS = 0
 	BEGIN
-		IF @count = 0
+		IF @prevStatus =  'mulai'
 			BEGIN
-				SET @prevTime =  @waktu
-				SET @prevIdArtikel =  @idArtikel
-				SET @count = 1
+				FETCH NEXT FROM curInterest INTO @idArtikel, @waktu, @status
+				IF @status = 'selesai' AND @idArtikel = @prevIdArtikel
+					BEGIN
+						INSERT INTO @resultArticle
+						SELECT @idArtikel, DATEDIFF(MINUTE, @prevWaktu, @waktu)
+						FETCH NEXT FROM curInterest INTO @previdArtikel, @prevWaktu, @prevStatus
+					END
+				ELSE
+					/* ini kalau dia dapatnya mulai ga dpt selesai */
+					BEGIN
+						SET @prevIdArtikel = @idArtikel
+						SET @prevWaktu =  @waktu
+						SET @prevStatus = @status
+					END
 			END
-		ELSE IF @count = 1
-			BEGIN
-				IF @prevIdArtikel =  @idArtikel
-					INSERT INTO @resultArticle
-					SELECT @idArtikel, DATEDIFF(minute, @prevTime, @waktu)
-					SET @count = 0
-			END
-		FETCH NEXT FROM curInterest INTO @idArtikel, @waktu
 	END
 CLOSE curInterest
 DEALLOCATE curInterest
@@ -319,7 +323,9 @@ FROM Kategori INNER JOIN (
 	GROUP BY himp.idKategori, kategori
 	ORDER BY duration
 GO
-EXEC CategoryOfInterest 3
+EXEC CategoryOfInterest 1
+EXEC CategoryOfInterest 2
+EXEC CategoryOfInterest 5
 
 
 --10
@@ -346,9 +352,7 @@ OPEN curInterest
 		@prevIdMember int,
 		@prevWaktu datetime,
 		@prevIdArtikel datetime,
-		@prevStatus varchar(255),
-		@belumSelesai bit
-	SET @belumSelesai = 0
+		@prevStatus varchar(255)
 	/*kalao tablenya ada pasangan selesai maka = 0 kalao tablenya ga ada pasangan selesai maka 1*/
 FETCH NEXT FROM curInterest INTO @prevIdMember, @previdArtikel, @prevWaktu, @prevStatus
 WHILE @@FETCH_STATUS = 0
@@ -425,7 +429,27 @@ FROM Langganan
 GO
 EXEC ScanTransaction
 
+
 --14
+DROP PROCEDURE IF EXISTS [DynamicSearch]
+CREATE PROCEDURE DynamicSearch
+	@keyword varchar(255)
+AS
+SELECT *
+FROM Kategori INNER JOIN (
+	SELECT himp.idArtikel, himp.berbayar, himp.idAdmin, himp.idMember, himp.judul, himp.status, himp.tanggalHapus, himp.tanggalUnggah, himp.tanggalValidasi, Berkategori.idKategori, himp.nama
+	FROM Berkategori INNER JOIN (
+		SELECT Artikel.idArtikel, Artikel.berbayar, Artikel.idAdmin, Artikel.idMember, Artikel.judul, Artikel.status, Artikel.tanggalHapus, Artikel.tanggalUnggah, Artikel.tanggalValidasi, Member.nama
+		FROM Artikel INNER JOIN Member on Artikel.idMember =  Member.idMember) as [himp] 
+		on Berkategori.idArtikel = himp.idArtikel) as [himp2] 
+	on kategori.idKategori = himp2.idKategori
+WHERE Kategori.kategori LIKE '%'+@keyword+'%' OR himp2.judul LIKE '%'+@keyword+'%' OR himp2.nama LIKE '%'+@keyword+'%'
+GO
+EXEC DynamicSearch 'ka'
+EXEC DynamicSearch 'ne'
+EXEC DynamicSearch 'di'
+
+--15
 DROP PROCEDURE IF EXISTS [UploadArticle]
 
 ALTER PROCEDURE UploadArticle
@@ -465,7 +489,7 @@ DEALLOCATE cursorKategori
 --EXEC UploadArticle 'deddoy carry the game',1,'1;2;',1
 
 
---15
+--16
 DROP PROCEDURE IF EXISTS [Subscribe]
 
 CREATE PROCEDURE Subscribe
@@ -475,3 +499,5 @@ DECLARE @maxi int;
 SELECT @maxi = MAX(idHarga) FROM Harga
 INSERT INTO LANGANAN(durasi,idMember,waktuSelesai,idHarga)
 SELECT 30,@idMember,CURRENT_TIMESTAMP,@maxi
+
+
