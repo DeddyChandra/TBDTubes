@@ -486,9 +486,6 @@ END
 CLOSE cursorKategori
 DEALLOCATE cursorKategori
 
---EXEC UploadArticle 'deddoy carry the game',1,'1;2;',1
-
-
 --16
 DROP PROCEDURE IF EXISTS [Subscribe]
 
