@@ -486,6 +486,8 @@ END
 CLOSE cursorKategori
 DEALLOCATE cursorKategori
 
+--EXEC UploadArticle 'Cara Menambah Tinggi Badan',1,'1;2;',1
+
 --16
 DROP PROCEDURE IF EXISTS [Subscribe]
 
