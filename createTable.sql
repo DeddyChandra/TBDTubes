@@ -78,3 +78,5 @@ CREATE TABLE Langganan(
 	FOREIGN KEY (idHarga) REFERENCES Harga(idHarga)
 )
 
+CREATE UNIQUE INDEX idx_email
+ON Member (email)
