@@ -15,4 +15,4 @@ SET [status] = @status, idAdmin = @idAdmin
 WHERE idArtikel = @idArtikel
 GO
 
-EXEC ValidateArtikel 1, 0, 3
+EXEC UpdateArticleStatus 1, 0, 3
