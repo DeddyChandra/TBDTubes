@@ -1,4 +1,6 @@
-
+/*
+    Sp ini berfungsi untuk menandai record member yang emailnya telah diverifikasi
+*/
 DROP PROCEDURE IF EXISTS [EmailVerification]
 
 CREATE PROCEDURE EmailVerification

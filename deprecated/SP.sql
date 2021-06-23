@@ -47,7 +47,7 @@ EXEC FindMember 'Joni@gmail.coma', 'joni134a' -- case salah email & salah passwo
 
 
 --4
-DROP PROCEDURE IF EXISTS [Admin]
+DROP PROCEDURE IF EXISTS [FindAdmin]
 CREATE PROCEDURE FindAdmin
 	@email varchar(255),
 	@password varchar(255)
